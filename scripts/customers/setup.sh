@@ -1,8 +1,11 @@
 #!/bin/bash
 
-echo "setup customers"
-echo ""
 source ~/config
+echo "setup customers in proj ${NAMESPACE_CUST}"
+echo ""
+
+oc new-project ${NAMESPACE_CUST}
+oc project ${NAMESPACE_CUST}
 
 # Admin JWT Token
 jwt1=$(echo -n '{"alg":"HS256","typ":"JWT"}' | openssl enc -base64);

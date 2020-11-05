@@ -1,5 +1,11 @@
 # note: the namespace is not completely scripted yet. Keep it full-bc for now.
-NAMESPACE=full-bc
+NAMESPACE-TOOL=full-bc-tools
+NAMESPACE-INV=full-bc-inv
+NAMESPACE-CAT=full-bc-cat
+NAMESPACE-CUST=full-bc-cust
+NAMESPACE=-ORDfull-bc-ord
+NAMESPACE-WEB=full-bc-web
+NAMESPACE-AUTH=full-bc-auth
 WORKSPACE=full-bc
 
 QUAY_PWD=
@@ -18,3 +24,19 @@ COUCHDB_PASSWORD=passw0rd
 COUCHDB_HOST=127.0.0.1
 COUCHDB_PORT=5984
 COUCHDB_DATABASE=customers
+
+INVENTORY_SERVICE_NAME=inventorymysql
+INVENTORY_ROOT_PASSWORD=admin123
+INVENTORY_USER=dbuser
+INVENTORY_PASSWORD=password
+INVENTORY_DATABASE=inventorydb
+
+ORDER_SERVICE_NAME=ordersmysql
+ORDER_ROOT_PASSWORD=admin123
+ORDER_USER=dbuser
+ORDER_PASSWORD=password
+ORDER_DATABASE=ordersdb
+
+
+
+

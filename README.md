@@ -68,4 +68,5 @@ Test the microservices.
 # Tear Down
 
    oc delete project full-bc
+   oc delete project full-bc-inv full-bc-cust full-bc-ord full-bc-cat full-bc-web full-bc-tools
 

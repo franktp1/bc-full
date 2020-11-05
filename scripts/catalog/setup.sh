@@ -1,6 +1,10 @@
 #!/bin/bash
 
-echo "setup catalog"
+source ~/config
+
+echo "setup catalog in proj ${NAMESPACE_CAT}"
+oc new-project ${NAMESPACE_CAT}
+oc project ${NAMESPACE_CAT}
 
 # Start an Elasticsearch Container
 #docker run --name catalogelasticsearch \

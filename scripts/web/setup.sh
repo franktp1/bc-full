@@ -1,3 +1,8 @@
 #!/bin/bash
 
-echo "setup web frontend"
+source ~/config
+
+echo "setup web frontend in proj ${NAMESPACE_WEB}"
+oc new-project ${NAMESPACE_WEB}
+oc project ${NAMESPACE_WEB}
+

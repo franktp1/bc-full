@@ -1,4 +1,15 @@
 #!/bin/bash
+source ~/config
+
+
+CURRENT_NS="$(oc project $NAMESPACE_INV -q)"
+  if [ "$CURRENT_NS" == "$NAMESPACE_INV" ]; then
+    oc project ${NAMESPACE_INV}
+  else
+    echo "*** run setup first !! ***"
+    exit -1
+  fi
+
 
 echo "deploying inventory microservice ... the openshift way"
 
@@ -14,7 +25,7 @@ oc create cm inventory \
 oc new-app \
  --name=inventory \
  --as-deployment-config \
- --image-stream=inventory
+ --image-stream=${NAMESPACE_TOOL}/inventory
 # --docker-image=quay.io/kitty_catt/inventory:latest
 # -e MYSQL_HOST=inventorymysql \
 # -e MYSQL_PORT=3306 \

@@ -5,7 +5,7 @@ echo "Working from $HERE"
 
 source ~/config
 
-oc new-project $NAMESPACE
+oc new-project $NAMESPACE_TOOL
 
 echo "temporary artifacts are stored in: " /tmp/$WORKSPACE
 

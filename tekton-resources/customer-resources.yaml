@@ -7,7 +7,7 @@ items:
   spec:
     params:
     - name: url
-      value: image-registry.openshift-image-registry.svc:5000/full-bc/customer
+      value: image-registry.openshift-image-registry.svc:5000/--NAMESPACE_TOOL--/customer
     type: image
 - apiVersion: tekton.dev/v1alpha1
   kind: PipelineResource
@@ -16,7 +16,7 @@ items:
   spec:
     params:
     - name: url
-      value: quay.io/kitty_catt/customer
+      value: quay.io/--QUAY_USER--/customer
     type: image    
 - apiVersion: tekton.dev/v1alpha1
   kind: PipelineResource

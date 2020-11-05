@@ -1,6 +1,16 @@
 #!/bin/bash
+source ~/config
+
 
 echo "deploy catalog"
+CURRENT_NS="$(oc project $NAMESPACE_CAT -q)"
+  if [ "$CURRENT_NS" == "$NAMESPACE_CAT" ]; then
+    oc project ${NAMESPACE_CAT}
+  else
+    echo "*** run setup first !! ***"
+    exit -1
+  fi
+
 
 # appsody run --docker-options "\
 # -e ELASTIC_CLUSTER_NAME=docker-cluster \
@@ -17,7 +27,7 @@ oc new-app --name=catalog \
    -e ELASTIC_CLUSTER_NAME=docker-cluster \
    -e ELASTIC_NODE_URL=catalogelasticsearch:9300 \
    -e INVENTORY_URL=http://inventory:8080/micro/inventory \
-   --image-stream=catalog \
+   --image-stream=${NAMESPACE_TOOL}/catalog \
    --as-deployment-config
 
 oc expose svc/catalog

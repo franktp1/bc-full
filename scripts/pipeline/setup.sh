@@ -1,7 +1,15 @@
 #!/bin/bash
 
-source $HERE/scripts/config
-echo "Setting up generic openshift pipeline"
+#source $HERE/scripts/config
+source ~/config
+echo "Setting up generic openshift pipeline in proj ${NAMESPACE_TOOL}"
+CURRENT_NS="$(oc project $NAMESPACE_TOOL -q)"
+  if [ "$CURRENT_NS" == "$NAMESPACE_TOOL" ]; then
+    oc project ${NAMESPACE_TOOL}
+  else
+    oc new-project ${NAMESPACE_TOOL}
+  fi
+
 
 oc apply -f $HERE/tekton-pipelines/pipeline.yaml 
 oc apply -f $HERE/tekton-tasks/appsody-build-push.yaml 
@@ -10,8 +18,8 @@ oc create sa appsody-sa
 
 # Note: the sleep will give OCP time to create the service account, and that is necessary for allocating the role binding.
 sleep 15
-oc policy add-role-to-user admin system:serviceaccount:$NAMESPACE:appsody-sa
-oc policy add-role-to-user admin system:serviceaccount:$NAMESPACE:pipeline
+oc policy add-role-to-user admin system:serviceaccount:$NAMESPACE_TOOL:appsody-sa
+oc policy add-role-to-user admin system:serviceaccount:$NAMESPACE_TOOL:pipeline
 
 oc create secret docker-registry quay-cred \
     --docker-server=quay.io \
@@ -25,7 +33,22 @@ oc secrets link appsody-sa quay-cred
 oc secrets link default quay-cred  --for=pull
 #oc describe sa default
 
-oc apply -f $HERE/tekton-resources/inventory-resources.yaml
-oc apply -f $HERE/tekton-resources/catalog-resources.yaml
-oc apply -f $HERE/tekton-resources/customer-resources.yaml
+#oc apply -f $HERE/tekton-resources/inventory-resources.yaml
+#oc apply -f $HERE/tekton-resources/catalog-resources.yaml
+#oc apply -f $HERE/tekton-resources/customer-resources.yaml
+
+cat $HERE/tekton-resources/inventory-resources.yaml \
+| sed  "s/--QUAY_USER--/${QUAY_USER}/g" \
+| sed  "s/--NAMESPACE_TOOL--/${NAMESPACE_TOOL}/g" \
+| oc apply -f -
+
+cat $HERE/tekton-resources/catalog-resources.yaml \
+| sed  "s/--QUAY_USER--/${QUAY_USER}/g" \
+| sed  "s/--NAMESPACE_TOOL--/${NAMESPACE_TOOL}/g" \
+| oc apply -f -
+
+cat $HERE/tekton-resources/customer-resources.yaml \
+| sed  "s/--QUAY_USER--/${QUAY_USER}/g" \
+| sed  "s/--NAMESPACE_TOOL--/${NAMESPACE_TOOL}/g" \
+| oc apply -f -
 

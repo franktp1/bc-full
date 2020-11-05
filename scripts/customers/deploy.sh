@@ -1,4 +1,15 @@
 #!/bin/bash
+source ~/config
+
+
+CURRENT_NS="$(oc project $NAMESPACE_CUST -q)"
+  if [ "$CURRENT_NS" == "$NAMESPACE_CUST" ]; then
+    oc project ${NAMESPACE_CUST}
+  else
+    echo "*** run setup first !! ***"
+    exit -1
+  fi
+
 
 echo "deploy customers"
 source ~/config
@@ -20,7 +31,7 @@ oc new-app --name=customer \
  -e COUCHDB_PASSWORD=${COUCHDB_PASSWORD} \
  -e COUCHDB_DATABASE=customers \
  -e HS256_KEY=${HS256_KEY} \
-  --image-stream=customer \
+  --image-stream=${NAMESPACE_TOOL}/customer \
   --as-deployment-config
 
 oc expose svc/customer --port=8080
