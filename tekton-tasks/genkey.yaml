@@ -14,7 +14,7 @@ spec:
       securityContext:
         privileged: true
       #image: appsody/appsody-buildah:0.5.3-buildah1.9.0
-      image: openshift/tools:latest
+      image: openshift/redhat-openjdk18-openshift:latest
       # need an image with keytool.. (oc is included)
       command: ['/bin/bash']
       args:
