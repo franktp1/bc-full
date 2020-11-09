@@ -7,7 +7,7 @@ items:
   spec:
     params:
     - name: url
-      value: image-registry.openshift-image-registry.svc:5000/--NAMESPACE_TOOL--/auth-ms-openliberty
+      value: image-registry.openshift-image-registry.svc:5000/--NAMESPACE_TOOL--/auth
     type: image
 - apiVersion: tekton.dev/v1alpha1
   kind: PipelineResource
@@ -16,7 +16,7 @@ items:
   spec:
     params:
     - name: url
-      value: quay.io/--QUAY_USER--/auth-ms-openliberty
+      value: quay.io/--QUAY_USER--/auth
     type: image    
 - apiVersion: tekton.dev/v1alpha1
   kind: PipelineResource

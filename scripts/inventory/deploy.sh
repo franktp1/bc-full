@@ -24,7 +24,7 @@ oc create cm inventory \
 # Deploy the inventory service
 oc new-app \
  --name=inventory \
- --as-deployment-config \
+ ${OCNEWAPP_OPTION} \
  --image-stream=${NAMESPACE_TOOL}/inventory
 # --docker-image=quay.io/kitty_catt/inventory:latest
 # -e MYSQL_HOST=inventorymysql \

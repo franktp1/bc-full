@@ -15,7 +15,7 @@ echo "deploy orders"
 
 oc new-app \
  --name=orders \
- --as-deployment-config \
+ ${OCNEWAPP_OPTION} \
  --image-stream=${NAMESPACE_TOOL}/orders
 #
 

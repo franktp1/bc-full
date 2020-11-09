@@ -32,6 +32,6 @@ oc new-app --name=customer \
  -e COUCHDB_DATABASE=customers \
  -e HS256_KEY=${HS256_KEY} \
   --image-stream=${NAMESPACE_TOOL}/customer \
-  --as-deployment-config
+  ${OCNEWAPP_OPTION}
 
 oc expose svc/customer --port=8080

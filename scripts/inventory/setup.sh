@@ -12,7 +12,7 @@ oc project ${NAMESPACE_INV}
 echo " building DB ${INVENTORY_DATABASE} with user ${INVENTORY_USER}"
 oc new-app \
   --name inventorymysql \
-  --as-deployment-config \
+  ${OCNEWAPP_OPTION} \
   --template openshift/mysql-persistent \
 -p DATABASE_SERVICE_NAME=${INVENTORY_SERVICE_NAME} \
 -p MYSQL_ROOT_PASSWORD=${INVENTORY_ROOT_PASSWORD} \

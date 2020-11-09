@@ -28,6 +28,6 @@ oc new-app --name=catalog \
    -e ELASTIC_NODE_URL=catalogelasticsearch:9300 \
    -e INVENTORY_URL=http://inventory:8080/micro/inventory \
    --image-stream=${NAMESPACE_TOOL}/catalog \
-   --as-deployment-config
+   ${OCNEWAPP_OPTION}
 
 oc expose svc/catalog

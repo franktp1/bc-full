@@ -8,6 +8,11 @@ NAMESPACE-WEB=full-bc-web
 NAMESPACE-AUTH=full-bc-auth
 WORKSPACE=full-bc
 
+# the scripts are created with deployment in DeploymentConfig in Mind
+# if running on OCP 4.5 or higher, supply --as-deployment-config as option to 'oc new-app'
+#OCNEWAPP_OPTION='--as-deployment-config'
+OCNEWAPP_OPTION=''
+
 QUAY_PWD=
 QUAY_USER=
 QUAY_EMAIL=

@@ -15,9 +15,9 @@ CURRENT_NS="$(oc project $NAMESPACE_AUTH -q)"
 
 oc new-app \
  --name=auth \
- --as-deployment-config \
+ ${OCNEWAPP_OPTION} \
  -e HS256_KEY=${HS256_KEY} \
- --image-stream=${NAMESPACE_TOOL}/auth-ms-openliberty
+ --image-stream=${NAMESPACE_TOOL}/auth
 #
 
 
