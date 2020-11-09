@@ -14,11 +14,12 @@ CURRENT_NS="$(oc project $NAMESPACE_ORD -q)"
 echo "deploy orders"
 
 oc new-app \
- --name=auth-ms-openliberty \
+ --name=orders \
  --as-deployment-config \
- --image-stream=${NAMESPACE_TOOL}/auth-ms-openliberty
+ --image-stream=${NAMESPACE_TOOL}/orders
 #
 
+oc expose svc/orders
 
 
 exit 0

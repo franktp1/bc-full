@@ -20,9 +20,11 @@ echo " building orders DB ${ORDER_DATABASE} with user ${ORDER_USER}"
 oc create cm inventory \
   --from-literal MYSQL_HOST=inventorymysql \
   --from-literal MYSQL_PORT=3306 \
-  --from-literal MYSQL_DATABASE=${ORDER_DATABASE} \
+  --from-literal MYSQL_DATABASE=${ORDER_DATABASE}
+oc create secret generic inventory \
   --from-literal MYSQL_USER=${ORDER_USER} \
   --from-literal MYSQL_PASSWORD=${ORDER_PASSWORD}
+
 
 oc new-app \
   --name=ordersmysql \

@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: genkey-task
+spec:
+  inputs:
+    params:
+      - name: secret-name
+        default: genkey-secret-files
+      - name: keystore-password
+        default: password
+  steps:
+    - name: generate
+      securityContext:
+        privileged: true
+      #image: appsody/appsody-buildah:0.5.3-buildah1.9.0
+      image: openshift/tools:latest
+      # need an image with keytool.. (oc is included)
+      command: ['/bin/bash']
+      args:
+        - -c
+        - 'keytool -genkeypair -dname "cn=bc.ibm.com, o=User, ou=IBM, c=US" -alias bckey -keyalg RSA -keysize 2048 -keypass $(inputs.params.keystore-password) -storetype PKCS12 -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password) -validity 3650 && keytool -list -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password) && keytool -export -alias bckey -file client.cer -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password) && keytool -import -v -trustcacerts -alias bckey -file client.cer -keystore ./truststore.p12 -storepass $(inputs.params.keystore-password) -noprompt && \
+oc create secret generic $(inputs.params.secret-name) --from-file=./KeyStoreFile.p12 --from-file=./truststore.p12 --from-file=client.cer'

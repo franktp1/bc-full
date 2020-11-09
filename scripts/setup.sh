@@ -38,6 +38,10 @@ bash $HERE/scripts/inventory/setup.sh
 echo ""
 
 echo "-----------------------------------------------------------------------------"
+bash $HERE/scripts/auth/setup.sh
+echo ""
+
+echo "-----------------------------------------------------------------------------"
 bash $HERE/scripts/orders/setup.sh
 echo ""
 

@@ -27,6 +27,7 @@ items:
     - name: revision
       value: master
     - name: url
+      #value: https://github.com/ibm-garage-ref-storefront/auth-ms-spring
       value: https://github.com/ibm-garage-ref-storefront/auth-ms-openliberty
     type: git
 kind: List

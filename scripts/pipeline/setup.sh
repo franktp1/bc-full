@@ -14,6 +14,11 @@ CURRENT_NS="$(oc project $NAMESPACE_TOOL -q)"
 oc apply -f $HERE/tekton-pipelines/pipeline.yaml 
 oc apply -f $HERE/tekton-tasks/appsody-build-push.yaml 
 
+# Q: can we generate the keys in a tekton pipeline and store the files in a secret, where MS can reuse them?
+oc apply -f $HERE/tekton-pipelines/genkey-pipeline.yaml 
+oc apply -f $HERE/tekton-tasks/genkey.yaml 
+
+
 oc create sa appsody-sa
 
 # Note: the sleep will give OCP time to create the service account, and that is necessary for allocating the role binding.
@@ -59,10 +64,10 @@ cat $HERE/tekton-resources/customer-resources.yaml \
 | sed  "s/--NAMESPACE_TOOL--/${NAMESPACE_TOOL}/g" \
 | oc apply -f -
 
-#cat $HERE/tekton-resources/orders-resources.yaml \
-#| sed  "s/--QUAY_USER--/${QUAY_USER}/g" \
-#| sed  "s/--NAMESPACE_TOOL--/${NAMESPACE_TOOL}/g" \
-#| oc apply -f -
+cat $HERE/tekton-resources/orders-resources.yaml \
+| sed  "s/--QUAY_USER--/${QUAY_USER}/g" \
+| sed  "s/--NAMESPACE_TOOL--/${NAMESPACE_TOOL}/g" \
+| oc apply -f -
 
 #auth-ms-openliberty
 cat $HERE/tekton-resources/auth-ms-openliberty-resources.yaml \

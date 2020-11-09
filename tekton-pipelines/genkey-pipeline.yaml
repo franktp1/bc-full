@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: genkey-pipeline
+spec:
+  tasks:
+    - name: generatekey
+      taskRef:
+        name: genkey-task
+      params:
+      - name: secret-name
+        value: genkey-secret-files
+      - name: keystore-password
+        value: passw0rd
