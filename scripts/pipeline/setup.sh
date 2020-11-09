@@ -33,6 +33,13 @@ oc secrets link appsody-sa quay-cred
 oc secrets link default quay-cred  --for=pull
 #oc describe sa default
 
+
+###################################################################################
+#                                                                                 #
+#   to my feeling a more loosely couple structure would be accomplished when we   #
+#   move below script to the setup.sh of the particular microservice              #
+#                                                                                 #
+###################################################################################
 #oc apply -f $HERE/tekton-resources/inventory-resources.yaml
 #oc apply -f $HERE/tekton-resources/catalog-resources.yaml
 #oc apply -f $HERE/tekton-resources/customer-resources.yaml
@@ -48,6 +55,17 @@ cat $HERE/tekton-resources/catalog-resources.yaml \
 | oc apply -f -
 
 cat $HERE/tekton-resources/customer-resources.yaml \
+| sed  "s/--QUAY_USER--/${QUAY_USER}/g" \
+| sed  "s/--NAMESPACE_TOOL--/${NAMESPACE_TOOL}/g" \
+| oc apply -f -
+
+#cat $HERE/tekton-resources/orders-resources.yaml \
+#| sed  "s/--QUAY_USER--/${QUAY_USER}/g" \
+#| sed  "s/--NAMESPACE_TOOL--/${NAMESPACE_TOOL}/g" \
+#| oc apply -f -
+
+#auth-ms-openliberty
+cat $HERE/tekton-resources/auth-ms-openliberty-resources.yaml \
 | sed  "s/--QUAY_USER--/${QUAY_USER}/g" \
 | sed  "s/--NAMESPACE_TOOL--/${NAMESPACE_TOOL}/g" \
 | oc apply -f -

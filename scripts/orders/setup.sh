@@ -12,6 +12,18 @@ CURRENT_NS="$(oc project $NAMESPACE_ORD -q)"
 
 echo " building orders DB ${ORDER_DATABASE} with user ${ORDER_USER}"
 
+#######################################
+#  TODO, merge the cm into the new-app params
+# note: this cm is referenced in the appl microservice as well
+# ( as it should)
+#######################################
+oc create cm inventory \
+  --from-literal MYSQL_HOST=inventorymysql \
+  --from-literal MYSQL_PORT=3306 \
+  --from-literal MYSQL_DATABASE=${ORDER_DATABASE} \
+  --from-literal MYSQL_USER=${ORDER_USER} \
+  --from-literal MYSQL_PASSWORD=${ORDER_PASSWORD}
+
 oc new-app \
   --name=ordersmysql \
   --as-deployment-config \

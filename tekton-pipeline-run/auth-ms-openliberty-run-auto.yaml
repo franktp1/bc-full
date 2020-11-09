@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  generateName: auth-ms-openliberty-pipeline-
+spec:
+  serviceAccountName: appsody-sa
+  timeout: "1h0m0s"  
+  pipelineRef:
+    name: appsody-build-pipeline
+  resources:
+    - name: git-source
+      resourceRef:
+        name: auth-ms-openliberty-source
+    - name: docker-image
+      resourceRef:
+        name: auth-ms-openliberty-image-internal
