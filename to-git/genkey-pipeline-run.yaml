@@ -1,0 +1,138 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"tekton.dev/v1alpha1","kind":"Pipeline","metadata":{"annotations":{},"name":"genkey-pipeline","namespace":"full-bc-tools"},"spec":{"tasks":[{"name":"generatekey","params":[{"name":"secret-name","value":"genkey-secret-files"},{"name":"keystore-password","value":"passw0rd"}],"taskRef":{"name":"genkey-task"}}]}}
+  creationTimestamp: "2020-11-11T12:17:15Z"
+  generation: 1
+  labels:
+    tekton.dev/pipeline: genkey-pipeline
+  name: genkey-pipeline-1xl8sv
+  namespace: full-bc-tools
+  resourceVersion: "224029"
+  selfLink: /apis/tekton.dev/v1beta1/namespaces/full-bc-tools/pipelineruns/genkey-pipeline-1xl8sv
+  uid: 4ca71a64-1ba4-4054-8a60-f9ad53b87baf
+spec:
+  pipelineRef:
+    name: genkey-pipeline
+  serviceAccountName: pipeline
+  timeout: 1h0m0s
+  workspaces:
+  - emptyDir: {}
+    name: key-store
+status:
+  completionTime: "2020-11-11T12:17:32Z"
+  conditions:
+  - lastTransitionTime: "2020-11-11T12:17:32Z"
+    message: 'Tasks Completed: 1 (Failed: 0, Cancelled 0), Skipped: 0'
+    reason: Succeeded
+    status: "True"
+    type: Succeeded
+  pipelineSpec:
+    tasks:
+    - name: generatekey
+      params:
+      - name: secret-name
+        value: genkey-secret-files
+      - name: keystore-password
+        value: passw0rd
+      taskRef:
+        kind: Task
+        name: genkey-task
+      workspaces:
+      - name: key-storage
+        workspace: key-store
+    workspaces:
+    - name: key-store
+  startTime: "2020-11-11T12:17:16Z"
+  taskRuns:
+    genkey-pipeline-1xl8sv-generatekey-rjnkn:
+      pipelineTaskName: generatekey
+      status:
+        completionTime: "2020-11-11T12:17:32Z"
+        conditions:
+        - lastTransitionTime: "2020-11-11T12:17:32Z"
+          message: All Steps have completed executing
+          reason: Succeeded
+          status: "True"
+          type: Succeeded
+        podName: genkey-pipeline-1xl8sv-generatekey-rjnkn-pod-bxjjs
+        startTime: "2020-11-11T12:17:16Z"
+        steps:
+        - container: step-generate
+          imageID: image-registry.openshift-image-registry.svc:5000/full-bc-tools/auth-ms-openliberty@sha256:55fcd9881516ce8fab765a449c063eae5b80045973cc8a7fa51db4287fcf9a05
+          name: generate
+          terminated:
+            containerID: cri-o://12aa904ffaee57cfc2281c1eb0c2ca3fbb40f24bda27af1a72754a6d186f19a2
+            exitCode: 0
+            finishedAt: "2020-11-11T12:17:29Z"
+            reason: Completed
+            startedAt: "2020-11-11T12:17:25Z"
+        - container: step-delete-old-store
+          imageID: image-registry.openshift-image-registry.svc:5000/openshift/cli@sha256:bcb2268756dc6d380ae9e0403ef0e1f8a54ed15b9afb6f9fc303c9e447510ed1
+          name: delete-old-store
+          terminated:
+            containerID: cri-o://59b89bb0a68da03e3239dc41aa33f22efbb04ade954f05186563a3b445ee312c
+            exitCode: 0
+            finishedAt: "2020-11-11T12:17:31Z"
+            reason: Completed
+            startedAt: "2020-11-11T12:17:30Z"
+        - container: step-store
+          imageID: image-registry.openshift-image-registry.svc:5000/openshift/cli@sha256:bcb2268756dc6d380ae9e0403ef0e1f8a54ed15b9afb6f9fc303c9e447510ed1
+          name: store
+          terminated:
+            containerID: cri-o://67ff32f9de1e2c3fa1f4a323ec4cf501c7093a47a6c61d40dc838647e98aa9af
+            exitCode: 0
+            finishedAt: "2020-11-11T12:17:32Z"
+            reason: Completed
+            startedAt: "2020-11-11T12:17:31Z"
+        taskSpec:
+          params:
+          - default: genkey-secret-files
+            name: secret-name
+            type: string
+          - default: password
+            name: keystore-password
+            type: string
+          steps:
+          - args:
+            - -c
+            - keytool -genkeypair -dname "cn=bc.ibm.com, o=User, ou=IBM, c=US" -alias
+              bckey -keyalg RSA -keysize 2048 -keypass $(inputs.params.keystore-password)
+              -storetype PKCS12 -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password)
+              -validity 3650 && keytool -list -keystore ./KeyStoreFile.p12 -storepass
+              $(inputs.params.keystore-password) && keytool -export -alias bckey -file
+              client.cer -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password)
+              && keytool -import -v -trustcacerts -alias bckey -file client.cer -keystore
+              ./truststore.p12 -storepass $(inputs.params.keystore-password) -noprompt
+            command:
+            - /bin/bash
+            image: image-registry.openshift-image-registry.svc:5000/full-bc-tools/auth-ms-openliberty:latest
+            name: generate
+            resources: {}
+            securityContext:
+              privileged: true
+            workingDir: $(workspaces.key-storage.path)
+          - image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+            name: delete-old-store
+            resources: {}
+            script: "#!/bin/bash\nset -x\noc get secret/$(inputs.params.secret-name)
+              \ \nif [ $? -eq 0 ]\nthen\n oc delete secret/$(inputs.params.secret-name)
+              \nelse\n  echo \"no secret found to delete\"\nfi\n"
+            securityContext:
+              privileged: true
+          - args:
+            - -c
+            - oc create secret generic $(inputs.params.secret-name) --from-file=./KeyStoreFile.p12
+              --from-file=./truststore.p12 --from-file=client.cer
+            command:
+            - /bin/bash
+            image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+            name: store
+            resources: {}
+            securityContext:
+              privileged: true
+            workingDir: $(workspaces.key-storage.path)
+          workspaces:
+          - name: key-storage

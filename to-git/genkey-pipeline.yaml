@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"tekton.dev/v1alpha1","kind":"Pipeline","metadata":{"annotations":{},"name":"genkey-pipeline","namespace":"full-bc-tools"},"spec":{"tasks":[{"name":"generatekey","params":[{"name":"secret-name","value":"genkey-secret-files"},{"name":"keystore-password","value":"passw0rd"}],"taskRef":{"name":"genkey-task"}}]}}
+  creationTimestamp: "2020-11-11T09:58:52Z"
+  generation: 5
+  name: genkey-pipeline
+  namespace: full-bc-tools
+  resourceVersion: "202397"
+  selfLink: /apis/tekton.dev/v1beta1/namespaces/full-bc-tools/pipelines/genkey-pipeline
+  uid: 834fd67a-d95d-4678-aaf2-2077b2f956dc
+spec:
+  tasks:
+  - name: generatekey
+    params:
+    - name: secret-name
+      value: genkey-secret-files
+    - name: keystore-password
+      value: passw0rd
+    taskRef:
+      kind: Task
+      name: genkey-task
+    workspaces:
+    - name: key-storage
+      workspace: key-store
+  workspaces:
+  - name: key-store

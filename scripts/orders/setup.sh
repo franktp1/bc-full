@@ -26,9 +26,13 @@ oc create secret generic inventory \
   --from-literal MYSQL_PASSWORD=${ORDER_PASSWORD}
 
 
+#  --as-deployment-config \
 oc new-app \
   --name=ordersmysql \
+<<<<<<< HEAD
   ${OCNEWAPP_OPTION} \
+=======
+>>>>>>> pipeline genkey
   --template openshift/mariadb-persistent \
 -p DATABASE_SERVICE_NAME=${ORDER_SERVICE_NAME} \
 -p MYSQL_ROOT_PASSWORD=${ORDER_ROOT_PASSWORD} \

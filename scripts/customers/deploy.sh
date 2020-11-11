@@ -33,5 +33,9 @@ oc new-app --name=customer \
  -e HS256_KEY=${HS256_KEY} \
   --image-stream=${NAMESPACE_TOOL}/customer \
   ${OCNEWAPP_OPTION}
+<<<<<<< HEAD
+=======
+#  --as-deployment-config
+>>>>>>> pipeline genkey
 
 oc expose svc/customer --port=8080

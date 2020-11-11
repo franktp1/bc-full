@@ -27,7 +27,12 @@ oc new-app --name=catalog \
    -e ELASTIC_CLUSTER_NAME=docker-cluster \
    -e ELASTIC_NODE_URL=catalogelasticsearch:9300 \
    -e INVENTORY_URL=http://inventory:8080/micro/inventory \
+<<<<<<< HEAD
    --image-stream=${NAMESPACE_TOOL}/catalog \
    ${OCNEWAPP_OPTION}
+=======
+   --image-stream=${NAMESPACE_TOOL}/catalog #\
+  # --as-deployment-config
+>>>>>>> pipeline genkey
 
 oc expose svc/catalog

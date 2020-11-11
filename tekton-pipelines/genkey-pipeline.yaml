@@ -12,3 +12,9 @@ spec:
         value: genkey-secret-files
       - name: keystore-password
         value: passw0rd
+    workspaces:
+    - name: key-storage
+      workspace: key-store
+  workspaces:
+  - name: key-store
+

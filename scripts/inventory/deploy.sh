@@ -21,10 +21,14 @@ oc create cm inventory \
   --from-literal MYSQL_PASSWORD=password
 
 
+# --as-deployment-config \
 # Deploy the inventory service
 oc new-app \
  --name=inventory \
+<<<<<<< HEAD
  ${OCNEWAPP_OPTION} \
+=======
+>>>>>>> pipeline genkey
  --image-stream=${NAMESPACE_TOOL}/inventory
 # --docker-image=quay.io/kitty_catt/inventory:latest
 # -e MYSQL_HOST=inventorymysql \

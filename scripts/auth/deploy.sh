@@ -13,17 +13,12 @@ CURRENT_NS="$(oc project $NAMESPACE_AUTH -q)"
   fi
 
 
+# --as-deployment-config \
 oc new-app \
  --name=auth \
  ${OCNEWAPP_OPTION} \
  -e HS256_KEY=${HS256_KEY} \
  --image-stream=${NAMESPACE_TOOL}/auth
 #
-
-
-
-#oc new-app --name=auth \
-# -e HS256_KEY=${HS256_KEY} \
-#  --image-stream=auth 
 
 oc expose svc/auth --port=8080

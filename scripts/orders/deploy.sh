@@ -13,9 +13,13 @@ CURRENT_NS="$(oc project $NAMESPACE_ORD -q)"
 
 echo "deploy orders"
 
+# --as-deployment-config \
 oc new-app \
  --name=orders \
+<<<<<<< HEAD
  ${OCNEWAPP_OPTION} \
+=======
+>>>>>>> pipeline genkey
  --image-stream=${NAMESPACE_TOOL}/orders
 #
 

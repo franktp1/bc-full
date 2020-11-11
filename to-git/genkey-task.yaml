@@ -1,0 +1,62 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"tekton.dev/v1alpha1","kind":"Task","metadata":{"annotations":{},"name":"genkey-task","namespace":"full-bc-tools"},"spec":{"inputs":{"params":[{"default":"genkey-secret-files","name":"secret-name"},{"default":"password","name":"keystore-password"}]},"steps":[{"args":["-c","keytool -genkeypair -dname \"cn=bc.ibm.com, o=User, ou=IBM, c=US\" -alias bckey -keyalg RSA -keysize 2048 -keypass $(inputs.params.keystore-password) -storetype PKCS12 -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password) -validity 3650 \u0026\u0026 keytool -list -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password) \u0026\u0026 keytool -export -alias bckey -file client.cer -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password) \u0026\u0026 keytool -import -v -trustcacerts -alias bckey -file client.cer -keystore ./truststore.p12 -storepass $(inputs.params.keystore-password) -noprompt \u0026\u0026 \\ oc create secret generic $(inputs.params.secret-name) --from-file=./KeyStoreFile.p12 --from-file=./truststore.p12 --from-file=client.cer"],"command":["/bin/bash"],"image":"openshift/tools:latest","name":"generate","securityContext":{"privileged":true}}]}}
+  creationTimestamp: "2020-11-11T09:58:53Z"
+  generation: 20
+  name: genkey-task
+  namespace: full-bc-tools
+  resourceVersion: "224274"
+  selfLink: /apis/tekton.dev/v1beta1/namespaces/full-bc-tools/tasks/genkey-task
+  uid: b428a635-922d-414f-8095-cc8c344595d5
+spec:
+  params:
+  - default: genkey-secret-files
+    name: secret-name
+    type: string
+  - default: password
+    name: keystore-password
+    type: string
+  steps:
+  - args:
+    - -c
+    - keytool -genkeypair -dname "cn=bc.ibm.com, o=User, ou=IBM, c=US" -alias bckey
+      -keyalg RSA -keysize 2048 -keypass $(inputs.params.keystore-password) -storetype
+      PKCS12 -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password)
+      -validity 3650 && keytool -list -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password)
+      && keytool -export -alias bckey -file client.cer -keystore ./KeyStoreFile.p12
+      -storepass $(inputs.params.keystore-password) && keytool -import -v -trustcacerts
+      -alias bckey -file client.cer -keystore ./truststore.p12 -storepass $(inputs.params.keystore-password)
+      -noprompt
+    command:
+    - /bin/bash
+    image: image-registry.openshift-image-registry.svc:5000/full-bc-tools/auth-ms-openliberty:latest
+    name: generate
+    resources: {}
+    securityContext:
+      privileged: true
+    workingDir: $(workspaces.key-storage.path)
+  - image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+    name: delete-old-store
+    resources: {}
+    script: "#!/bin/bash\noc get secret/$(inputs.params.secret-name)  \nif [ $? -eq
+      0 ]\nthen\n oc delete secret/$(inputs.params.secret-name) \nelse\n  echo \"no
+      secret found to delete\"\nfi\n"
+    securityContext:
+      privileged: true
+  - args:
+    - -c
+    - oc create secret generic $(inputs.params.secret-name) --from-file=./KeyStoreFile.p12
+      --from-file=./truststore.p12 --from-file=client.cer
+    command:
+    - /bin/bash
+    image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+    name: store
+    resources: {}
+    securityContext:
+      privileged: true
+    workingDir: $(workspaces.key-storage.path)
+  workspaces:
+  - name: key-storage

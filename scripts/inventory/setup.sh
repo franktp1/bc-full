@@ -10,9 +10,13 @@ oc project ${NAMESPACE_INV}
 
 # Use OCP's capability to deploy the MySQL database
 echo " building DB ${INVENTORY_DATABASE} with user ${INVENTORY_USER}"
+#  --as-deployment-config \
 oc new-app \
   --name inventorymysql \
+<<<<<<< HEAD
   ${OCNEWAPP_OPTION} \
+=======
+>>>>>>> pipeline genkey
   --template openshift/mysql-persistent \
 -p DATABASE_SERVICE_NAME=${INVENTORY_SERVICE_NAME} \
 -p MYSQL_ROOT_PASSWORD=${INVENTORY_ROOT_PASSWORD} \

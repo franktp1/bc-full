@@ -6,18 +6,47 @@ spec:
   inputs:
     params:
       - name: secret-name
+        type: string
         default: genkey-secret-files
       - name: keystore-password
+        type: string
         default: password
   steps:
     - name: generate
       securityContext:
         privileged: true
-      #image: appsody/appsody-buildah:0.5.3-buildah1.9.0
-      image: openshift/redhat-openjdk18-openshift:latest
-      # need an image with keytool.. (oc is included)
+      image: image-registry.openshift-image-registry.svc:5000/full-bc-tools/auth-ms-openliberty:latest
       command: ['/bin/bash']
       args:
         - -c
-        - 'keytool -genkeypair -dname "cn=bc.ibm.com, o=User, ou=IBM, c=US" -alias bckey -keyalg RSA -keysize 2048 -keypass $(inputs.params.keystore-password) -storetype PKCS12 -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password) -validity 3650 && keytool -list -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password) && keytool -export -alias bckey -file client.cer -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password) && keytool -import -v -trustcacerts -alias bckey -file client.cer -keystore ./truststore.p12 -storepass $(inputs.params.keystore-password) -noprompt && \
-oc create secret generic $(inputs.params.secret-name) --from-file=./KeyStoreFile.p12 --from-file=./truststore.p12 --from-file=client.cer'
+        - >- keytool -genkeypair -dname "cn=bc.ibm.com, o=User, ou=IBM, c=US" -alias bckey -keyalg RSA -keysize 2048 -keypass $(inputs.params.keystore-password) -storetype PKCS12 -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password) -validity 3650 && keytool -list -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password) && keytool -export -alias bckey -file client.cer -keystore ./KeyStoreFile.p12 -storepass $(inputs.params.keystore-password) && keytool -import -v -trustcacerts -alias bckey -file client.cer -keystore ./truststore.p12 -storepass $(inputs.params.keystore-password) -noprompt
+    workingDir: $(workspaces.key-storage.path)
+  - image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+    name: delete-old-store
+    resources: {}
+    script: | 
+             #!/bin/bash
+             oc get secret/$(inputs.params.secret-name)  
+             if [ $? -eq 0 ]
+             then
+              oc delete secret/$(inputs.params.secret-name) 
+             else
+               echo /"no secret found to delete\"
+             fi
+    securityContext:
+      privileged: true
+  - args:
+    - -c
+    - oc create secret generic $(inputs.params.secret-name) --from-file=./KeyStoreFile.p12
+      --from-file=./truststore.p12 --from-file=client.cer
+    command:
+    - /bin/bash
+    image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+    name: store
+    resources: {}
+    securityContext:
+      privileged: true
+    workingDir: $(workspaces.key-storage.path)
+  workspaces:
+  - name: key-storage
+
