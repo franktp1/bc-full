@@ -18,7 +18,9 @@ oc new-app \
  --name=orders \
  ${OCNEWAPP_OPTION} \
  --image-stream=${NAMESPACE_TOOL}/orders \
- -e jdbcURL=jdbc:mysql://ordersmysql:3307/ordersdb?useSSL=true
+ -e jdbcURL=jdbc:mysql://ordersmysql:3307/${ORDER_DATABASE}?useSSL=true \
+ -e dbuser=${ORDER_USER} -e dbpassword=${ORDER_PASSWORD} \
+ -e jwksIssuer="https://localhost:9444/oidc/endpoint/OP"
  
 oc set env db/orders 
 # -e dbuser=<database user name> -e dbpassword=<database password> -e jwksIssuer="https://localhost:9444/oidc/endpoint/OP"
