@@ -17,11 +17,11 @@ echo " building orders DB ${ORDER_DATABASE} with user ${ORDER_USER}"
 # note: this cm is referenced in the appl microservice as well
 # ( as it should)
 #######################################
-oc create cm inventory \
-  --from-literal MYSQL_HOST=inventorymysql \
+oc create cm order \
+  --from-literal MYSQL_HOST=ordermysql \
   --from-literal MYSQL_PORT=3306 \
   --from-literal MYSQL_DATABASE=${ORDER_DATABASE}
-oc create secret generic inventory \
+oc create secret generic order \
   --from-literal MYSQL_USER=${ORDER_USER} \
   --from-literal MYSQL_PASSWORD=${ORDER_PASSWORD}
 
@@ -29,10 +29,7 @@ oc create secret generic inventory \
 #  --as-deployment-config \
 oc new-app \
   --name=ordersmysql \
-<<<<<<< HEAD
   ${OCNEWAPP_OPTION} \
-=======
->>>>>>> pipeline genkey
   --template openshift/mariadb-persistent \
 -p DATABASE_SERVICE_NAME=${ORDER_SERVICE_NAME} \
 -p MYSQL_ROOT_PASSWORD=${ORDER_ROOT_PASSWORD} \

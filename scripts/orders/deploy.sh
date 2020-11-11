@@ -16,12 +16,29 @@ echo "deploy orders"
 # --as-deployment-config \
 oc new-app \
  --name=orders \
-<<<<<<< HEAD
  ${OCNEWAPP_OPTION} \
-=======
->>>>>>> pipeline genkey
- --image-stream=${NAMESPACE_TOOL}/orders
+ --image-stream=${NAMESPACE_TOOL}/orders \
+ -e jdbcURL=jdbc:mysql://ordersmysql:3307/ordersdb?useSSL=true
+ 
+oc set env db/orders 
+# -e dbuser=<database user name> -e dbpassword=<database password> -e jwksIssuer="https://localhost:9444/oidc/endpoint/OP"
 #
+
+oc set volume dc/orders --add --name secretsvol1 \
+ -m src/main/liberty/config/resources/security/BCKeyStoreFile.p12 \
+ --sub-path=KeyStoreFile.p12 \
+ --type secret \
+ --secret-name ${NAMESPACE_TOOL}/genkey-secret-files
+oc set volume dc/orders --add --name secretsvol2 \
+ -m src/main/liberty/config/resources/security/client.cer \
+ --sub-path=client.cer \
+ --type secret \
+ --secret-name ${NAMESPACE_TOOL}/genkey-secret-files
+oc set volume dc/orders --add --name secretsvol3 \
+ -m src/main/liberty/config/resources/security/truststore.p12 \
+ --sub-path=truststore.p12 \
+ --type secret \
+ --secret-name ${NAMESPACE_TOOL}/genkey-secret-files
 
 oc expose svc/orders
 
