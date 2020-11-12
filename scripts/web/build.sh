@@ -3,7 +3,7 @@ source ~/config
 
 
 echo "build web frontend"
-CURRENT_NS="$(oc project $NAMESPACE_WEB -q)"
+CURRENT_NS="$(oc project -q)"
   if [ "$CURRENT_NS" == "$NAMESPACE_WEB" ]; then
     oc project ${NAMESPACE_WEB}
   else

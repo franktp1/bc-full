@@ -3,7 +3,7 @@
 source ~/config
 
 echo "setting up inventory microservice in proj ${NAMESPACE_INV}"
-CURRENT_NS="$(oc project $NAMESPACE_INV -q)"
+CURRENT_NS="$(oc project -q)"
   if [ "$CURRENT_NS" == "$NAMESPACE_INV" ]; then
     oc project ${NAMESPACE_INV}
   else

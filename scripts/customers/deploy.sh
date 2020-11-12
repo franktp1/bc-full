@@ -2,7 +2,7 @@
 source ~/config
 
 
-CURRENT_NS="$(oc project $NAMESPACE_CUST -q)"
+CURRENT_NS="$(oc project ${NAMESPACE_CUST} -q)"
   if [ "$CURRENT_NS" == "$NAMESPACE_CUST" ]; then
     oc project ${NAMESPACE_CUST}
   else

@@ -3,7 +3,7 @@
 source ~/config
 
 echo "setup catalog in proj ${NAMESPACE_CAT}"
-CURRENT_NS="$(oc project $NAMESPACE_CAT -q)"
+CURRENT_NS="$(oc project -q)"
   if [ "$CURRENT_NS" == "$NAMESPACE_CAT" ]; then
     oc project ${NAMESPACE_CAT}
   else

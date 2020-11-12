@@ -3,7 +3,7 @@
 #source $HERE/scripts/config
 source ~/config
 echo "Setting up generic openshift pipeline in proj ${NAMESPACE_TOOL}"
-CURRENT_NS="$(oc project $NAMESPACE_TOOL -q)"
+CURRENT_NS="$(oc project -q)"
   if [ "$CURRENT_NS" == "$NAMESPACE_TOOL" ]; then
     oc project ${NAMESPACE_TOOL}
   else
@@ -16,7 +16,13 @@ oc apply -f $HERE/tekton-tasks/appsody-build-push.yaml
 
 # Q: can we generate the keys in a tekton pipeline and store the files in a secret, where MS can reuse them?
 oc apply -f $HERE/tekton-pipelines/genkey-pipeline.yaml 
-oc apply -f $HERE/tekton-tasks/genkey.yaml 
+#TODO note: the genkey task uses the internal auth image, needs to be updated with pipeline resource
+#oc apply -f $HERE/tekton-tasks/genkey.yaml 
+cat $HERE/tekton-tasks/genkey.yaml \
+| sed  "s/--QUAY_USER--/${QUAY_USER}/g" \
+| sed  "s/--NAMESPACE_TOOL--/${NAMESPACE_TOOL}/g" \
+| oc apply -f -
+
 
 
 oc create sa appsody-sa

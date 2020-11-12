@@ -3,7 +3,7 @@
 source ~/config
 
 echo "setup orders in proj ${NAMESPACE_ORD}"
-CURRENT_NS="$(oc project $NAMESPACE_ORD -q)"
+CURRENT_NS="$(oc project -q)"
   if [ "$CURRENT_NS" == "$NAMESPACE_ORD" ]; then
     oc project ${NAMESPACE_ORD}
   else

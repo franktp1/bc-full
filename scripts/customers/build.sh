@@ -5,7 +5,7 @@ echo "build customer microservice"
 echo "building is done in tools ns. if we try to put this pipelinerun in its own ns it can not find the pipeline itself"
 echo " ++ can we tell the pilelinerun to find the pipeline in a particular ns? ++"
 sleep 3
-CURRENT_NS="$(oc project $NAMESPACE_TOOL -q)"
+CURRENT_NS="$(oc project -q)"
   if [ "$CURRENT_NS" == "$NAMESPACE_TOOL" ]; then
     oc project ${NAMESPACE_TOOL}
   else

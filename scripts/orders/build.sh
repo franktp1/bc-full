@@ -3,7 +3,7 @@ source ~/config
 
 
 echo "build orders"
-CURRENT_NS="$(oc project $NAMESPACE_TOOL -q)"
+CURRENT_NS="$(oc project -q)"
   if [ "$CURRENT_NS" == "$NAMESPACE_TOOL" ]; then
     oc project ${NAMESPACE_TOOL}
   else

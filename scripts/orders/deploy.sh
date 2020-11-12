@@ -2,7 +2,7 @@
 source ~/config
 
 
-CURRENT_NS="$(oc project $NAMESPACE_ORD -q)"
+CURRENT_NS="$(oc project ${NAMESPACE_ORD} -q)"
   if [ "$CURRENT_NS" == "$NAMESPACE_ORD" ]; then
     oc project ${NAMESPACE_ORD}
   else
@@ -13,7 +13,6 @@ CURRENT_NS="$(oc project $NAMESPACE_ORD -q)"
 
 echo "deploy orders"
 
-# --as-deployment-config \
 oc new-app \
  --name=orders \
  ${OCNEWAPP_OPTION} \
@@ -22,7 +21,7 @@ oc new-app \
  -e dbuser=${ORDER_USER} -e dbpassword=${ORDER_PASSWORD} \
  -e jwksIssuer="https://localhost:9444/oidc/endpoint/OP"
  
-oc set env db/orders 
+#oc set env db/orders 
 # -e dbuser=<database user name> -e dbpassword=<database password> -e jwksIssuer="https://localhost:9444/oidc/endpoint/OP"
 #
 
@@ -42,7 +41,7 @@ oc set volume dc/orders --add --name secretsvol3 \
  --type secret \
  --secret-name ${NAMESPACE_TOOL}/genkey-secret-files
 
-oc rollout dc/orders
+oc rollout latest dc/orders
 oc expose svc/orders
 
 

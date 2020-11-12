@@ -4,7 +4,7 @@ source ~/config
 echo "build auth service for OAuth 2.0 authentication"
 
 
-CURRENT_NS="$(oc project $NAMESPACE_TOOL -q)"
+CURRENT_NS="$(oc project -q)"
   if [ "$CURRENT_NS" == "$NAMESPACE_TOOL" ]; then
     oc project ${NAMESPACE_TOOL}
   else
@@ -23,7 +23,7 @@ oc create -f $HERE/tekton-pipeline-run/auth-ms-openliberty-run-auto.yaml
 # the Task will store the files in a secret.
 # To be able to use this image by the pipeline, assign the serviceaccount 'pipeline' the proper rights on this image
 oc adm policy add-role-to-user system:image-puller system:serviceaccount:${NAMESPACE_TOOL}:pipeline --rolebinding-name=image-pull-pipelineSA
-oc adm policy add-role-to-user system:registryn system:serviceaccount:${NAMESPACE_TOOL}:pipeline --rolebinding-name=registry-pipelineSA
+oc adm policy add-role-to-user system:registry system:serviceaccount:${NAMESPACE_TOOL}:pipeline --rolebinding-name=registry-pipelineSA
 
 
 
