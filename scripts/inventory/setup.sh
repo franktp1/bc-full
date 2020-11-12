@@ -3,20 +3,19 @@
 source ~/config
 
 echo "setting up inventory microservice in proj ${NAMESPACE_INV}"
-oc new-project ${NAMESPACE_INV}
-oc project ${NAMESPACE_INV}
-
+CURRENT_NS="$(oc project $NAMESPACE_INV -q)"
+  if [ "$CURRENT_NS" == "$NAMESPACE_INV" ]; then
+    oc project ${NAMESPACE_INV}
+  else
+    oc new-project ${NAMESPACE_INV}
+  fi
 
 
 # Use OCP's capability to deploy the MySQL database
 echo " building DB ${INVENTORY_DATABASE} with user ${INVENTORY_USER}"
-#  --as-deployment-config \
 oc new-app \
   --name inventorymysql \
-<<<<<<< HEAD
   ${OCNEWAPP_OPTION} \
-=======
->>>>>>> pipeline genkey
   --template openshift/mysql-persistent \
 -p DATABASE_SERVICE_NAME=${INVENTORY_SERVICE_NAME} \
 -p MYSQL_ROOT_PASSWORD=${INVENTORY_ROOT_PASSWORD} \

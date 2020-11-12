@@ -42,6 +42,7 @@ oc set volume dc/orders --add --name secretsvol3 \
  --type secret \
  --secret-name ${NAMESPACE_TOOL}/genkey-secret-files
 
+oc rollout dc/orders
 oc expose svc/orders
 
 

@@ -1,11 +1,15 @@
 #!/bin/bash
 
 source ~/config
-echo "setup customers in proj ${NAMESPACE_CUST}"
-echo ""
 
-oc new-project ${NAMESPACE_CUST}
-oc project ${NAMESPACE_CUST}
+echo "setup customers in proj ${NAMESPACE_CUST}"
+CURRENT_NS="$(oc project $NAMESPACE_CUST -q)"
+  if [ "$CURRENT_NS" == "$NAMESPACE_CUST" ]; then
+    oc project ${NAMESPACE_CUST}
+  else
+    oc new-project ${NAMESPACE_CUST}
+  fi
+
 
 # Admin JWT Token
 jwt1=$(echo -n '{"alg":"HS256","typ":"JWT"}' | openssl enc -base64);
@@ -54,13 +58,8 @@ sleep 10
 oc new-app --name=customercouchdb \
    -e COUCHDB_USER=$COUCHDB_USER \
    -e COUCHDB_PASSWORD=$COUCHDB_PASSWORD \
-<<<<<<< HEAD
    --docker-image=couchdb:2.1.2 \
    ${OCNEWAPP_OPTION}
-=======
-   --docker-image=couchdb:2.1.2 #\
-   #--as-deployment-config
->>>>>>> pipeline genkey
 
 oc patch dc/customercouchdb --patch '{"spec":{"template":{"spec":{"serviceAccountName": "couchdb"}}}}'
 

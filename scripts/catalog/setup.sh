@@ -3,8 +3,13 @@
 source ~/config
 
 echo "setup catalog in proj ${NAMESPACE_CAT}"
-oc new-project ${NAMESPACE_CAT}
-oc project ${NAMESPACE_CAT}
+CURRENT_NS="$(oc project $NAMESPACE_CAT -q)"
+  if [ "$CURRENT_NS" == "$NAMESPACE_CAT" ]; then
+    oc project ${NAMESPACE_CAT}
+  else
+    oc new-project ${NAMESPACE_CAT}
+  fi
+
 
 # Start an Elasticsearch Container
 #docker run --name catalogelasticsearch \

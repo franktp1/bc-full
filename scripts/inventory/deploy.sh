@@ -13,22 +13,19 @@ CURRENT_NS="$(oc project $NAMESPACE_INV -q)"
 
 echo "deploying inventory microservice ... the openshift way"
 
-oc create cm inventory \
-  --from-literal MYSQL_HOST=inventorymysql \
+oc create secret generic inventory \
+  --from-literal MYSQL_HOST=${INVENTORY_SERVICE_NAME} \
   --from-literal MYSQL_PORT=3306 \
-  --from-literal MYSQL_DATABASE=inventorydb \
-  --from-literal MYSQL_USER=dbuser \
-  --from-literal MYSQL_PASSWORD=password
+  --from-literal MYSQL_DATABASE=${INVENTORY_DATABASE} \
+  --from-literal MYSQL_USER=${INVENTORY_USER} \
+  --from-literal MYSQL_PASSWORD=${INVENTORY_PASSWORD}
 
 
-# --as-deployment-config \
+
 # Deploy the inventory service
 oc new-app \
  --name=inventory \
-<<<<<<< HEAD
  ${OCNEWAPP_OPTION} \
-=======
->>>>>>> pipeline genkey
  --image-stream=${NAMESPACE_TOOL}/inventory
 # --docker-image=quay.io/kitty_catt/inventory:latest
 # -e MYSQL_HOST=inventorymysql \
@@ -37,6 +34,6 @@ oc new-app \
 # -e MYSQL_USER=dbuser \
 # -e MYSQL_PASSWORD=password
 
-oc set env dc/inventory --from=cm/inventory
-
+oc set env dc/inventory --from=secret/inventory
+oc rollout dc/inventory
 oc expose svc/inventory
