@@ -26,17 +26,17 @@ oc new-app \
 #
 
 oc set volume dc/orders --add --name secretsvol1 \
- -m /opt/ol/wlp/usr/servers/defaultServer/resources/security/BCKeyStoreFile.p12 \
+ -m src/main/liberty/config/resources/security/BCKeyStoreFile.p12 \
  --sub-path=KeyStoreFile.p12 \
  --type secret \
  --secret-name ${NAMESPACE_TOOL}/genkey-secret-files
 oc set volume dc/orders --add --name secretsvol2 \
- -m /opt/ol/wlp/usr/servers/defaultServer/resources/security/client.cer \
+ -m src/main/liberty/config/resources/security/client.cer \
  --sub-path=client.cer \
  --type secret \
  --secret-name ${NAMESPACE_TOOL}/genkey-secret-files
 oc set volume dc/orders --add --name secretsvol3 \
- -m /opt/ol/wlp/usr/servers/defaultServer/resources/security/truststore.p12 \
+ -m src/main/liberty/config/resources/security/truststore.p12 \
  --sub-path=truststore.p12 \
  --type secret \
  --secret-name ${NAMESPACE_TOOL}/genkey-secret-files
